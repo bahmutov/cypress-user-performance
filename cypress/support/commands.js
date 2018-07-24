@@ -23,11 +23,10 @@ before(() => {
   measures.length = 0
 })
 
-after(() => {
+after(function saveMeasures () {
   console.log('all %d measure(s)', measures.length)
   console.log(measures)
-  // TODO send measures to Node land via cy.task or write into a file
-  cy.writeFile('measures.json', JSON.stringify(measures, null, 2) + '\n')
+  return cy.task('saveMeasures', measures)
 })
 
 afterEach(() => {
