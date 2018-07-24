@@ -82,8 +82,12 @@ Cypress.on('window:before:load', (win) => {
 Cypress.Commands.overwrite("visit", (originalVisit, url, options) => {
   const opts = Cypress._.merge(options, {
     onLoad: (win) => {
-      win.performance.mark('end')
-      win.performance.measure('load', 'start', 'end')
+      const perf = win.performance
+      perf.mark('end')
+      perf.measure('load', 'start', 'end')
+      const measure = perf.getEntriesByName('load', 'measure')[0]
+      console.log('new measure', measure)
+      measures.push(measure)
     }
   })
   return originalVisit(url, opts)
@@ -97,15 +101,6 @@ before(() => {
 
 after(function saveMeasures () {
   console.log('all %d measure(s)', measures.length)
-  console.log(measures)
+  console.table(measures)
   return cy.task('saveMeasures', measures)
-})
-
-afterEach(() => {
-  cy.window().its('performance')
-    .then(performance => {
-      const measure = performance.getEntriesByName('load', 'measure')[0]
-      console.log(measure)
-      measures.push(measure)
-    })
 })
