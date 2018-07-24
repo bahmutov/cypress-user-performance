@@ -1,4 +1,4 @@
 {
-  "baseUrl": "http://todomvc.com/examples/dojo/",
+  "baseUrl": "http://todomvc.com/examples/react/",
   "blacklistHosts": "www.google-analytics.com"
 }

@@ -12,6 +12,7 @@
   "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com> (https://glebbahmutov.com/)",
   "license": "ISC",
   "dependencies": {
+    "console.table": "0.10.0",
     "cypress": "3.0.2"
   }
 }
