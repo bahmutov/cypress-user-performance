@@ -17,9 +17,9 @@
 describe('TodoMVC - React', function () {
 
   // setup these constants to match what TodoMVC does
-  let TODO_ITEM_ONE = 'buy some cheese'
-  let TODO_ITEM_TWO = 'feed the cat'
-  let TODO_ITEM_THREE = 'book a doctors appointment'
+  const TODO_ITEM_ONE = 'buy some cheese'
+  const TODO_ITEM_TWO = 'feed the cat'
+  const TODO_ITEM_THREE = 'book a doctors appointment'
 
   beforeEach(function () {
     // By default Cypress will automatically
@@ -62,71 +62,6 @@ describe('TodoMVC - React', function () {
     })
   })
 
-  context('New Todo', function () {
-    // New commands used here:
-    // https://on.cypress.io/type
-    // https://on.cypress.io/eq
-    // https://on.cypress.io/find
-    // https://on.cypress.io/contains
-    // https://on.cypress.io/should
-    // https://on.cypress.io/as
-
-    it('should allow me to add todo items', function () {
-      // create 1st todo
-      cy.get('.new-todo').type(TODO_ITEM_ONE).type('{enter}')
-
-      // make sure the 1st label contains the 1st todo text
-      cy.get('.todo-list li').eq(0).find('label').should('contain', TODO_ITEM_ONE)
-
-      // create 2nd todo
-      cy.get('.new-todo').type(TODO_ITEM_TWO).type('{enter}')
-
-      // make sure the 2nd label contains the 2nd todo text
-      cy.get('.todo-list li').eq(1).find('label').should('contain', TODO_ITEM_TWO)
-    })
-
-    it('should clear text input field when an item is added', function () {
-      cy.get('.new-todo').type(TODO_ITEM_ONE).type('{enter}')
-      cy.get('.new-todo').should('have.text', '')
-    })
-
-    it('should append new items to the bottom of the list', function () {
-      // this is an example of a custom command
-      // which is stored in tests/_support/spec_helper.js
-      // you should open up the spec_helper and look at
-      // the comments!
-      cy.createDefaultTodos().as('todos')
-
-      // even though the text content is split across
-      // multiple <span> and <strong> elements
-      // `cy.contains` can verify this correctly
-      cy.get('.todo-count').contains('3 items left')
-
-      cy.get('@todos').eq(0).find('label').should('contain', TODO_ITEM_ONE)
-      cy.get('@todos').eq(1).find('label').should('contain', TODO_ITEM_TWO)
-      cy.get('@todos').eq(2).find('label').should('contain', TODO_ITEM_THREE)
-    })
-
-    it('should trim text input', function () {
-      // this is an example of another custom command
-      // since we repeat the todo creation over and over
-      // again. It's up to you to decide when to abstract
-      // repetitive behavior and roll that up into a custom
-      // command vs explicitly writing the code.
-      cy.createTodo(`    ${TODO_ITEM_ONE}    `)
-
-      // we use as explicit assertion here about the text instead of
-      // using 'contain' so we can specify the exact text of the element
-      // does not have any whitespace around it
-      cy.get('.todo-list li').eq(0).should('have.text', TODO_ITEM_ONE)
-    })
-
-    it('should show #main and #footer when items added', function () {
-      cy.createTodo(TODO_ITEM_ONE)
-      cy.get('.main').should('be.visible')
-      cy.get('.footer').should('be.visible')
-    })
-  })
 
   context('Mark all as completed', function () {
     // New commands used here:
@@ -239,77 +174,6 @@ describe('TodoMVC - React', function () {
       // explicitly assert about the text value
       cy.get('@todos').eq(0).should('contain', TODO_ITEM_ONE)
       cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos').eq(2).should('contain', TODO_ITEM_THREE)
-    })
-  })
-
-  context('Editing', function () {
-    // New commands used here:
-    // - cy.blur    https://on.cypress.io/api/blur
-
-    beforeEach(function () {
-      cy.createDefaultTodos().as('todos')
-    })
-
-    it('should hide other controls when editing', function () {
-      cy.get('@todos').eq(1).as('secondTodo')
-      .find('label').dblclick()
-
-      cy.get('@secondTodo').find('.toggle').should('not.be.visible')
-      cy.get('@secondTodo').find('label').should('not.be.visible')
-
-    })
-
-    it('should save edits on blur', function () {
-      cy.get('@todos').eq(1).as('secondTodo')
-      .find('label').dblclick()
-
-      cy.get('@secondTodo')
-      .find('.edit').clear()
-      .type('buy some sausages')
-      // we can just send the blur event directly
-      // to the input instead of having to click
-      // on another button on the page. though you
-      // could do that its just more mental work
-      .blur()
-
-      cy.get('@todos').eq(0).should('contain', TODO_ITEM_ONE)
-      cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos').eq(2).should('contain', TODO_ITEM_THREE)
-    })
-
-    it('should trim entered text', function () {
-      cy.get('@todos').eq(1).as('secondTodo')
-      .find('label').dblclick()
-
-      cy.get('@secondTodo')
-      .find('.edit').clear()
-      .type('    buy some sausages    ').type('{enter}')
-
-      cy.get('@todos').eq(0).should('contain', TODO_ITEM_ONE)
-      cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos').eq(2).should('contain', TODO_ITEM_THREE)
-    })
-
-    it('should remove the item if an empty text string was entered', function () {
-      cy.get('@todos').eq(1).as('secondTodo')
-      .find('label').dblclick()
-
-      cy.get('@secondTodo')
-      .find('.edit').clear().type('{enter}')
-
-      cy.get('@todos').should('have.length', 2)
-    })
-
-    it('should cancel edits on escape', function () {
-      cy.get('@todos').eq(1).as('secondTodo')
-      .find('label').dblclick()
-
-      cy.get('@secondTodo')
-      .find('.edit').clear().type('foo{esc}')
-
-      cy.get('@todos').eq(0).should('contain', TODO_ITEM_ONE)
-      cy.get('@todos').eq(1).should('contain', TODO_ITEM_TWO)
       cy.get('@todos').eq(2).should('contain', TODO_ITEM_THREE)
     })
   })
